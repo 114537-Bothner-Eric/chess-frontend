@@ -78,6 +78,7 @@ export function Chess() {
 
   socket.addEventListener("message", (event) => {
     let msg = JSON.parse(event.data);
+    console.log(msg);
     switch (msg.type) {
       case "color":
         if (msg.message == "Black") {
@@ -91,7 +92,7 @@ export function Chess() {
         setTurn(msg.message.split(" ")[1]);
         break;
       case "ML":
-        console.log(msg.message)
+        console.log(msg.message);
         setMl(msg.message);
         break;
       case "opponent":
@@ -133,6 +134,30 @@ export function Chess() {
           socket = null;
         }, 4000);
         break;
+      case "WhiteCheck":
+        if (msg.message == "whitecheck") {
+          if (!toast.isActive(2)) {
+            toast.error(`El rey negro esta en jaque`, {
+              toastId: 2,
+              position: "top-right",
+              autoClose: 1500,
+              hideProgressBar: false,
+              theme: "dark",
+            });
+          }
+        }
+      case "BlackCheck":
+        if (msg.message == "blackcheck") {
+          if (!toast.isActive(3)) {
+            toast.error(`El rey blanco esta en jaque`, {
+              toastId: 3,
+              position: "top-right",
+              autoClose: 1500,
+              hideProgressBar: false,
+              theme: "dark",
+            });
+          }
+        }
       default:
         break;
     }

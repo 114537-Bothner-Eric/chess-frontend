@@ -2,13 +2,12 @@ import { useEffect, useState } from "react";
 import { Chessboard } from "react-chessboard";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Popup from 'reactjs-popup';
+import Popup from "reactjs-popup";
 
 let socket;
 
 export function LocalChess() {
-
-  console.log(localStorage.getItem('FEN'))
+  console.log(localStorage.getItem("FEN"));
 
   const [pos, setPos] = useState("start");
   const [turn, setTurn] = useState("w");
@@ -60,7 +59,7 @@ export function LocalChess() {
         setMl(msg.message);
         break;
       case "WINNER":
-        localStorage.removeItem('FEN');
+        localStorage.removeItem("FEN");
         toast.info(`Gano ${msg.message}, volviendo al menu`, {
           toastId: 1,
           position: "top-right",
@@ -73,10 +72,34 @@ export function LocalChess() {
           theme: "dark",
         });
         setTimeout(() => {
-          navigate("/")
+          navigate("/");
         }, 4000);
-        setWinner(msg.message)
+        setWinner(msg.message);
         break;
+      case "WhiteCheck":
+        if (msg.message == "whitecheck") {
+          if (!toast.isActive(2)) {
+            toast.error(`El rey negro esta en jaque`, {
+              toastId: 2,
+              position: "top-right",
+              autoClose: 1500,
+              hideProgressBar: false,
+              theme: "dark",
+            });
+          }
+        }
+      case "BlackCheck":
+        if (msg.message == "blackcheck") {
+          if (!toast.isActive(3)) {
+            toast.error(`El rey blanco esta en jaque`, {
+              toastId: 3,
+              position: "top-right",
+              autoClose: 1500,
+              hideProgressBar: false,
+              theme: "dark",
+            });
+          }
+        }
       default:
         break;
     }
@@ -152,23 +175,63 @@ export function LocalChess() {
             Jugador 1
           </div>
         </div>
-        <div style={{ width: "25%", height: "100vh", margin: "0px 15px"}}>
-          <div style={{height: "10%"}}></div>
-          <div style={{color: "white", fontSize: "2em", backgroundColor: "#555", display: "flex", justifyContent: "center"}}>
+        <div style={{ width: "25%", height: "100vh", margin: "0px 15px" }}>
+          <div style={{ height: "10%" }}></div>
+          <div
+            style={{
+              color: "white",
+              fontSize: "2em",
+              backgroundColor: "#555",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
             Ultimos Movimientos
           </div>
-          <div style={{maxHeight: "75%", overflowY: "auto", backgroundColor: "gray" }}>{mlObject}</div>
+          <div
+            style={{
+              maxHeight: "75%",
+              overflowY: "auto",
+              backgroundColor: "gray",
+            }}
+          >
+            {mlObject}
+          </div>
         </div>
       </div>
-      <button onClick={() => {
-        setOpen(true)
-      }}>asdad</button>
       <Popup open={open} onClose={() => setOpen(false)}>
-        <div className="modal" style={{backgroundColor: "#1b1b1b", color: "white", fontSize: "2.5em", width: "40vw", margin: "auto"}}>
-          <div style={{padding: "15px", display: "flex", justifyContent: "center"}}>Hay una partida en progreso. Deseas continuarla?</div>
-          <div style={{padding: "10px", display: "flex", justifyContent: "space-around"}}>
-            <button style={{padding: "5px 50px", fontSize: "0.8em"}}>Si</button>
-            <button style={{padding: "5px 50px", fontSize: "0.8em"}}>No</button>
+        <div
+          className="modal"
+          style={{
+            backgroundColor: "#1b1b1b",
+            color: "white",
+            fontSize: "2.5em",
+            width: "40vw",
+            margin: "auto",
+          }}
+        >
+          <div
+            style={{
+              padding: "15px",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            Hay una partida en progreso. Deseas continuarla?
+          </div>
+          <div
+            style={{
+              padding: "10px",
+              display: "flex",
+              justifyContent: "space-around",
+            }}
+          >
+            <button style={{ padding: "5px 50px", fontSize: "0.8em" }}>
+              Si
+            </button>
+            <button style={{ padding: "5px 50px", fontSize: "0.8em" }}>
+              No
+            </button>
           </div>
         </div>
       </Popup>
